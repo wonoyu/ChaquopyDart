@@ -5,10 +5,18 @@ import '../lib/chaquopy.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  MethodChannel channel = const MethodChannel('chaquopy');
+  // MethodChannel channel = const MethodChannel('chaquopy');
 
-  channel.setMockMethodCallHandler(null);
+  // channel.setMockMethodCallHandler(null);
 
-  expect(Chaquopy.executeCode('print("Hello")'),
-      {"textOutput": "Hello", "error": ""});
+  group('test', () {
+    test('Check standard code', () async {
+      expect(await Chaquopy.executeCode('print("Hello")'),
+          {"textOutput": "Hello", "error": ""});
+    });
+    test('Check standard code', () async {
+      expect(await Chaquopy.executeFunction('return 2'),
+          {"textOutput": "Hello", "error": ""});
+    });
+  });
 }

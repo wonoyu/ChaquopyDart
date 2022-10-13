@@ -45,11 +45,42 @@ class ChaquopyPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
+    //  * This will build and run a python function, returning an error and the result of said function
+    fun _runPythonTextFunction(name: String, code: String): Map<String, Any?> {
+        val _returnOutput: MutableMap<String, Any?> = HashMap()
+        val _returns: Any?;
+        val _python: Python = Python.getInstance()
+        val _build_n_run: PyObject = _python.getModule("build_n_run")
+        val _sys: PyObject = _python.getModule("sys")
+        val _io: PyObject = _python.getModule("io")
+
+        return try {
+            val _textOutputStream: PyObject = _io.callAttr("StringIO")
+            _returns = _build_n_run.callAttrThrows("mainTextCode", name, code, _textOutputStream)
+            _returnOutput["textOutputOrError"] = _returns.toString() // _textOutputStream.callAttr("getvalue").toString()
+            _returnOutput
+        } catch (e: PyException) {
+            _returnOutput["textOutputOrError"] = e.message.toString()
+            _returnOutput
+        }
+    }
+
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         if (call.method == "runPythonScript") {
             try {
                 val code: String = call.arguments() ?: ""
                 val _result: Map<String, Any?> = _runPythonTextCode(code)
+                result.success(_result)
+            } catch (e: Exception) {
+                val _result: MutableMap<String, Any?> = HashMap()
+                _result["textOutputOrError"] = e.message.toString()
+                result.success(_result)
+            }
+        } else if (call.method == "runPythonFunction") {
+            try {
+                val name: String = call.argument("name") ?: ""
+                val code: String = call.argument("code") ?: ""
+                val _result: Map<String, Any?> = _runPythonTextFunction(name, code)
                 result.success(_result)
             } catch (e: Exception) {
                 val _result: MutableMap<String, Any?> = HashMap()

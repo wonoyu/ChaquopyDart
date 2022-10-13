@@ -13,4 +13,11 @@ class Chaquopy {
     dynamic outputData = await _channel.invokeMethod('runPythonScript', code);
     return Map<String, dynamic>.from(outputData);
   }
+
+  static Future<Map<String, dynamic>> executeFunction(
+      String name, String code) async {
+    dynamic outputData = await _channel
+        .invokeMethod('runPythonFunction', {"name": name, "code": code});
+    return Map<String, dynamic>.from(outputData);
+  }
 }

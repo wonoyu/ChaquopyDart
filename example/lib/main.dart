@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:chaquopy/chaquopy.dart';
 
 void main() {
@@ -110,8 +109,7 @@ class _HomePageState extends State<HomePage> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: FlatButton(
-                        color: Colors.green,
+                      child: TextButton(
                         onPressed: () => addIntendation(),
                         child: Icon(
                           Icons.arrow_right_alt,
@@ -125,9 +123,7 @@ class _HomePageState extends State<HomePage> {
                     flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: FlatButton(
-                        height: 50,
-                        color: Colors.green,
+                      child: TextButton(
                         child: Text(
                           'run Code',
                         ),

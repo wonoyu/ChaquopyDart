@@ -83,7 +83,7 @@ class ChaquopyPlugin : FlutterPlugin, MethodCallHandler {
             try {
                 val name: String = call.argument("name") ?: ""
                 val code: String = call.argument("code") ?: ""
-                val args: Array<Any?> = call.argument("args") ?: []
+                val args: Array<Any?> = call.argument("args") ?: arrayOf()
                 val _result: Map<String, Any?> = _runPythonTextFunction(name, code, args)
                 result.success(_result)
             } catch (e: Exception) {

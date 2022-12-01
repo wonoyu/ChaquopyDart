@@ -14,9 +14,5 @@ void main() {
       expect(await Chaquopy.executeCode('print("Hello")'),
           {"textOutput": "Hello", "error": ""});
     });
-    test('Check standard code', () async {
-      expect(await Chaquopy.executeFunction('return 2'),
-          {"textOutput": "Hello", "error": ""});
-    });
   });
 }

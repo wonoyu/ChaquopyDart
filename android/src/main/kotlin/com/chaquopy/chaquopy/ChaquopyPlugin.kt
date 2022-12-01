@@ -46,7 +46,7 @@ class ChaquopyPlugin : FlutterPlugin, MethodCallHandler {
     }
 
     //  * This will build and run a python function, returning an error and the result of said function
-    fun _runPythonTextFunction(name: String, code: String): Map<String, Any?> {
+    fun _runPythonTextFunction(name: String, code: String, args: Array<String>): Map<String, Any?> {
         val _returnOutput: MutableMap<String, Any?> = HashMap()
         val _returns: Any?;
         val _python: Python = Python.getInstance()
@@ -56,7 +56,7 @@ class ChaquopyPlugin : FlutterPlugin, MethodCallHandler {
 
         return try {
             val _textOutputStream: PyObject = _io.callAttr("StringIO")
-            _returns = _build_n_run.callAttrThrows("mainTextCode", name, code, _textOutputStream)
+            _returns = _build_n_run.callAttrThrows("mainTextCode", name, code, args, _textOutputStream)
             _returnOutput["textOutputOrError"] = _returns.toString() // _textOutputStream.callAttr("getvalue").toString()
             _returnOutput
         } catch (e: PyException) {

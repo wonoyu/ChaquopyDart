@@ -83,12 +83,14 @@ class ChaquopyPlugin : FlutterPlugin, MethodCallHandler {
             try {
                 val name: String = call.argument("name") ?: ""
                 val code: String = call.argument("code") ?: ""
-                val args: Array<String> = call.argument("args") ?: arrayOf()
+                val _args: ArrayList<String> = call.argument("args") ?: arrayListOf<String>()
+                val args: Array<String> = _args.toTypedArray() ?: arrayOf<String>()
                 val _result: Map<String, Any?> = _runPythonTextFunction(name, code, args)
                 result.success(_result)
             } catch (e: Exception) {
                 val _result: MutableMap<String, Any?> = HashMap()
-                _result["textOutputOrError"] = "Exception during method call => " + e.message.toString()
+                println(call.argument("args"))
+                _result["textOutputOrError"] = "Exception during method call => " + e.message.toString() + e.getStackTrace()[0].getLineNumber().toString()
                 result.success(_result)
             }
         }

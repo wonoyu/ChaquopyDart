@@ -88,7 +88,7 @@ class ChaquopyPlugin : FlutterPlugin, MethodCallHandler {
                 result.success(_result)
             } catch (e: Exception) {
                 val _result: MutableMap<String, Any?> = HashMap()
-                _result["textOutputOrError"] = e.message.toString()
+                _result["textOutputOrError"] = "Exception during method call => " + e.message.toString()
                 result.success(_result)
             }
         }

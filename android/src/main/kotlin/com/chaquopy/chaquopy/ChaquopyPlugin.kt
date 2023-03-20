@@ -1,6 +1,7 @@
 package com.chaquopy.chaquopy
 
 import androidx.annotation.NonNull
+import android.util.Log
 import com.chaquo.python.PyException
 import com.chaquo.python.PyObject
 import com.chaquo.python.Python
@@ -68,9 +69,24 @@ class ChaquopyPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 
+    fun _runPreprocess(img: ByteArray): ByteArray {
+        val _py: Python = Python.getInstance()
+        val _module: PyObject = _py.getModule("preprocess")
+
+        return try {
+            val preprocessed = _module.callAttr("preprocess", img).toJava(ByteArray::class.java)
+            Log.d("Preprocessed", preprocessed.toString())
+            preprocessed
+        } catch (e: PyException) {
+            Log.d("PyException/PreprocessFailed", e.message.toString())
+            img
+        }
+    }
+
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-        if (call.method == "runPythonScript") {
-            try {
+        when (call.method) {
+            "runPythonScript" -> {
+                try {
                 val code: String = call.arguments() ?: ""
                 val _result: Map<String, Any?> = _runPythonTextCode(code)
                 result.success(_result)
@@ -79,8 +95,9 @@ class ChaquopyPlugin : FlutterPlugin, MethodCallHandler {
                 _result["textOutputOrError"] = e.message.toString()
                 result.success(_result)
             }
-        } else if (call.method == "runPythonFunction") {
-            try {
+            }
+            "runPythonFunction" -> {
+                try {
                 val name: String = call.argument("name") ?: ""
                 val code: String = call.argument("code") ?: ""
                 val _args: ArrayList<String> = call.argument("args") ?: arrayListOf<String>()
@@ -92,6 +109,17 @@ class ChaquopyPlugin : FlutterPlugin, MethodCallHandler {
                 println(call.argument("args"))
                 _result["textOutputOrError"] = "Exception during method call => " + e.message.toString() + e.getStackTrace()[0].getLineNumber().toString()
                 result.success(_result)
+            }
+            }
+            "runPreprocess" -> {
+                try {
+                    val _img: ByteArray = call.argument("img")!!
+                    val _res: ByteArray = _runPreprocess(_img)
+                    result.success(_res)
+                } catch (e: Exception) {
+                    Log.d("Exception", e.message.toString())
+                    result.success(call.argument("img")!!)
+                }
             }
         }
     }

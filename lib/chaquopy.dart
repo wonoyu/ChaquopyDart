@@ -20,4 +20,10 @@ class Chaquopy {
         'runPythonFunction', {"name": name, "code": code, "args": args});
     return Map<String, dynamic>.from(outputData);
   }
+
+  static Future<Uint8List> executePreprocess(Uint8List img) async {
+    dynamic output = await _channel.invokeMethod('runPreprocess', {"img": img});
+    if (output is Uint8List) return output;
+    return img;
+  }
 }
